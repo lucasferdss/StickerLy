@@ -49,34 +49,31 @@ export function SectionPage({ section, stickers, onToggle, onBack, filter }: Pro
           backgroundImage: `radial-gradient(120% 120% at 0% 0%, ${section.accent}55, transparent 60%), linear-gradient(180deg, hsl(var(--surface-elevated)), hsl(var(--surface)))`,
         }}
       >
-        <div className="flex items-start justify-between">
-          <div className="min-w-0">
-            <div className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
-              {section.kind === "team" ? `Grupo ${section.group} · ${section.short}` : "Página Especial"}
-            </div>
-            <h2 className="text-2xl font-semibold tracking-tight mt-1 text-balance">
-              {section.name}
-            </h2>
-            <p className="text-xs text-white/55 mt-1 tabular-nums">
-              #{section.start.toString().padStart(3, "0")} – #{section.end.toString().padStart(3, "0")}
-            </p>
+        <div className="min-w-0">
+          <div className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
+            {section.kind === "team" ? `Grupo ${section.group} · ${section.short}` : "Página Especial"}
           </div>
-          <div
-            className="h-16 w-16 rounded-2xl flex items-center justify-center text-4xl border border-white/15 shrink-0"
-            style={{ background: `${section.accent}22` }}
-          >
-            {section.kind === "team" ? section.flag : "★"}
-          </div>
+
+          <h2 className="text-2xl font-semibold tracking-tight mt-1 text-balance">
+            {section.name}
+          </h2>
+
+          <p className="text-xs text-white/55 mt-1 tabular-nums">
+            #{section.start.toString().padStart(3, "0")} – #{section.end.toString().padStart(3, "0")}
+          </p>
         </div>
 
         <div className="flex items-baseline justify-between mt-5">
           <span className="text-3xl font-semibold tabular-nums tracking-tight">
-            {stats.owned}<span className="text-base text-white/50">/{stats.total}</span>
+            {stats.owned}
+            <span className="text-base text-white/50">/{stats.total}</span>
           </span>
+
           <span className="text-sm font-medium text-white/70 tabular-nums">
             {stats.percent.toFixed(0)}%
           </span>
         </div>
+
         <div className="h-2 rounded-full bg-white/10 overflow-hidden mt-2">
           <motion.div
             initial={{ width: 0 }}
@@ -91,9 +88,11 @@ export function SectionPage({ section, stickers, onToggle, onBack, filter }: Pro
           <span className="inline-flex items-center gap-1 text-[hsl(var(--success))]">
             <CheckCircle2 className="h-3 w-3" /> {stats.owned - stats.repeated} únicas
           </span>
+
           <span className="inline-flex items-center gap-1 text-[hsl(var(--gold))]">
             <Copy className="h-3 w-3" /> {stats.repeated} rep.
           </span>
+
           <span className="inline-flex items-center gap-1 text-[hsl(var(--destructive))]">
             <CircleDashed className="h-3 w-3" /> {stats.missing} faltam
           </span>
