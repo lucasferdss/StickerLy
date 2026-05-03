@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RotateCcw } from "lucide-react";
 import { SegmentedTabs, type Tab } from "@/components/SegmentedTabs";
 import { AlbumView } from "@/components/AlbumView";
+import { SectionPage } from "@/components/SectionPage";
 import { StatsView } from "@/components/StatsView";
 import { ResetDialog } from "@/components/ResetDialog";
 import type { Filter } from "@/components/FilterBar";
+import { SECTIONS } from "@/lib/album";
 import {
   loadStickers,
   saveStickers,
@@ -19,8 +21,9 @@ const Index = () => {
   const [stickers, setStickers] = useState<StickersMap>({});
   const [tab, setTab] = useState<Tab>("album");
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<Filter>("all");
+  const [filter] = useState<Filter>("all");
   const [resetOpen, setResetOpen] = useState(false);
+  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
 
   useEffect(() => {
     setStickers(loadStickers());
@@ -30,6 +33,11 @@ const Index = () => {
   useEffect(() => {
     saveStickers(stickers);
   }, [stickers]);
+
+  const activeSection = useMemo(
+    () => SECTIONS.find((s) => s.id === activeSectionId) ?? null,
+    [activeSectionId]
+  );
 
   const toggleSticker = (n: number) => {
     vibrate(8);
@@ -47,11 +55,11 @@ const Index = () => {
     vibrate([10, 30, 10]);
     setStickers({});
     setResetOpen(false);
+    setActiveSectionId(null);
   };
 
   return (
     <div className="min-h-full pb-16">
-      {/* Sticky header */}
       <header className="sticky top-0 z-40 glass-strong safe-top">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -72,32 +80,56 @@ const Index = () => {
           </button>
         </div>
         <div className="max-w-2xl mx-auto px-4 pb-4 flex justify-center">
-          <SegmentedTabs tab={tab} onChange={setTab} />
+          <SegmentedTabs
+            tab={tab}
+            onChange={(t) => {
+              setTab(t);
+              setActiveSectionId(null);
+            }}
+          />
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 pt-5">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {tab === "album" ? (
+          {tab === "stats" ? (
+            <motion.div
+              key="stats"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <StatsView stickers={stickers} />
+            </motion.div>
+          ) : activeSection ? (
+            <SectionPage
+              key={`section-${activeSection.id}`}
+              section={activeSection}
+              stickers={stickers}
+              onToggle={toggleSticker}
+              onBack={() => setActiveSectionId(null)}
+              filter={filter}
+            />
+          ) : (
+            <motion.div
+              key="album-index"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
               <AlbumView
                 stickers={stickers}
-                onToggle={toggleSticker}
                 query={query}
                 setQuery={setQuery}
-                filter={filter}
-                setFilter={setFilter}
+                onOpenSection={(id) => {
+                  setActiveSectionId(id);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
               />
-            ) : (
-              <StatsView stickers={stickers} />
-            )}
-          </motion.div>
+            </motion.div>
+          )}
         </AnimatePresence>
       </main>
 
