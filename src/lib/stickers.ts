@@ -1,4 +1,6 @@
-export const TOTAL_STICKERS = 670;
+import { ALBUM_TOTAL, type Section } from "./album";
+
+export const TOTAL_STICKERS = ALBUM_TOTAL;
 
 export type StickerStatus = "missing" | "owned" | "repeated";
 
@@ -48,6 +50,20 @@ export function computeStats(map: StickersMap) {
   const missing = TOTAL_STICKERS - haveOne;
   const percent = (haveOne / TOTAL_STICKERS) * 100;
   return { total: TOTAL_STICKERS, owned: haveOne, missing, repeated, percent };
+}
+
+export function computeSectionStats(map: StickersMap, section: Section) {
+  let owned = 0;
+  let repeated = 0;
+  for (let i = section.start; i <= section.end; i++) {
+    const s = map[i] ?? "missing";
+    if (s === "owned") owned++;
+    else if (s === "repeated") repeated++;
+  }
+  const haveOne = owned + repeated;
+  const missing = section.count - haveOne;
+  const percent = (haveOne / section.count) * 100;
+  return { total: section.count, owned: haveOne, missing, repeated, percent };
 }
 
 export function vibrate(ms: number | number[] = 8) {
