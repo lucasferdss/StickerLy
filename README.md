@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# StickerLy
 
-TODO: Document your project here
+Aplicativo para gerenciar álbum de figurinhas da Copa 2026.
