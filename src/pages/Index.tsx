@@ -62,15 +62,13 @@ const Index = () => {
     <div className="min-h-full pb-16">
       <header className="sticky top-0 z-40 glass-strong safe-top">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-2xl bg-gradient-gold shadow-gold flex items-center justify-center text-gold-foreground font-bold text-sm">
-              ⚽
-            </div>
+          <div className="flex items-center">
             <div className="leading-tight">
-              <h1 className="text-base font-semibold tracking-tight">Copa Sticker</h1>
-              <p className="text-[11px] text-muted-foreground">Álbum 2026</p>
+              <h1 className="text-base font-semibold tracking-tight">StickerLy</h1>
+              <p className="text-[11px] text-muted-foreground">FIFA WORLD CUP 2026</p>
             </div>
           </div>
+
           <button
             onClick={() => setResetOpen(true)}
             className="h-9 w-9 rounded-full bg-secondary/80 border border-white/5 flex items-center justify-center text-muted-foreground active:scale-95 transition-transform"
@@ -79,6 +77,7 @@ const Index = () => {
             <RotateCcw className="h-4 w-4" />
           </button>
         </div>
+
         <div className="max-w-2xl mx-auto px-4 pb-4 flex justify-center">
           <SegmentedTabs
             tab={tab}
