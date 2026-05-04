@@ -17,7 +17,6 @@ export function AuthModal({ open, onClose }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -40,14 +39,8 @@ export function AuthModal({ open, onClose }: Props) {
         setMessage(
           "E-mail ou senha incorretos. Se você criou a conta com Google, entre em Continuar com Google."
         );
-      } else if (error?.code === "auth/wrong-password") {
-        setMessage("Senha incorreta. Tente novamente ou use Esqueci a senha.");
-      } else if (error?.code === "auth/user-not-found") {
-        setMessage("Conta não encontrada. Crie uma conta ou entre com Google.");
       } else if (error?.code === "auth/email-already-in-use") {
-        setMessage(
-          "Esse e-mail já está em uso. Tente entrar ou use Continuar com Google."
-        );
+        setMessage("Esse e-mail já está em uso. Tente entrar ou use Google.");
       } else {
         setMessage(
           "Não foi possível entrar. Se esse e-mail foi usado com Google, entre em Continuar com Google."
@@ -85,18 +78,20 @@ export function AuthModal({ open, onClose }: Props) {
     try {
       await resetPassword(email);
       setMessage(
-        "Se esse e-mail tiver uma conta com senha, enviaremos um link de recuperação."
+        "Se essa conta foi criada com e-mail e senha, enviaremos um link de recuperação. Se foi criada com Google, entre em Continuar com Google."
       );
     } catch {
-      setMessage("Não foi possível enviar o link de recuperação.");
+      setMessage(
+        "Não foi possível enviar. Se sua conta foi criada com Google, use Continuar com Google."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xl px-4">
-      <div className="w-full max-w-sm rounded-[2rem] bg-[#18181b]/95 border border-white/10 shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-xl px-4 py-6">
+      <div className="w-full max-w-sm max-h-[92dvh] overflow-y-auto rounded-[2rem] bg-[#18181b]/95 border border-white/10 shadow-2xl">
         <div className="flex items-center justify-between px-5 pt-5">
           <div>
             <h2 className="text-xl font-semibold tracking-tight">
@@ -169,11 +164,7 @@ export function AuthModal({ open, onClose }: Props) {
             disabled={loading}
             className="w-full h-12 rounded-2xl bg-primary text-primary-foreground font-semibold active:scale-[0.98] transition disabled:opacity-60"
           >
-            {loading
-              ? "Carregando..."
-              : mode === "login"
-                ? "Entrar"
-                : "Cadastrar"}
+            {loading ? "Carregando..." : mode === "login" ? "Entrar" : "Cadastrar"}
           </button>
 
           <div className="flex justify-between text-xs text-muted-foreground pt-1">
@@ -183,17 +174,12 @@ export function AuthModal({ open, onClose }: Props) {
                 setMessage("");
               }}
               disabled={loading}
-              className="active:text-foreground transition disabled:opacity-60"
             >
               {mode === "login" ? "Criar conta" : "Já tenho conta"}
             </button>
 
             {mode === "login" && (
-              <button
-                onClick={handleReset}
-                disabled={loading}
-                className="active:text-foreground transition disabled:opacity-60"
-              >
+              <button onClick={handleReset} disabled={loading}>
                 Esqueci a senha
               </button>
             )}
