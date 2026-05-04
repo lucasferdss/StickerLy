@@ -1,7 +1,7 @@
 // Panini-style album structure for FIFA World Cup 2026.
-// 48 teams (new format) × 12 stickers each = 576
-// + Special sections = 94
-// Total = 670 (matches TOTAL_STICKERS)
+// First sticker: PANINI 00
+// 48 teams × 12 stickers each
+// + Special sections
 
 export type SectionKind = "special" | "team";
 
@@ -9,13 +9,13 @@ export interface Section {
   id: string;
   kind: SectionKind;
   name: string;
-  short: string;          // 3-letter code (e.g. BRA) or special prefix
-  flag?: string;          // emoji flag for teams
-  accent?: string;        // hex color used for header glow
-  count: number;          // number of stickers in this section
-  start: number;          // first sticker number (inclusive)
-  end: number;            // last sticker number (inclusive)
-  group?: string;         // FIFA group letter (A-L) for teams
+  short: string;
+  flag?: string;
+  accent?: string;
+  count: number;
+  start: number;
+  end: number;
+  group?: string;
 }
 
 interface RawTeam {
@@ -26,58 +26,44 @@ interface RawTeam {
   group: string;
 }
 
-// Plausible 48-team lineup grouped A–L (3 teams × 12 groups → top 2 + best 8 thirds advance).
 const TEAMS: RawTeam[] = [
-  // Group A
   { name: "México", short: "MEX", flag: "🇲🇽", accent: "#1f7a3a", group: "A" },
   { name: "Equador", short: "ECU", flag: "🇪🇨", accent: "#ffcd00", group: "A" },
   { name: "Marrocos", short: "MAR", flag: "🇲🇦", accent: "#c1272d", group: "A" },
-  // Group B
   { name: "Canadá", short: "CAN", flag: "🇨🇦", accent: "#d52b1e", group: "B" },
   { name: "Croácia", short: "CRO", flag: "🇭🇷", accent: "#171796", group: "B" },
   { name: "Japão", short: "JPN", flag: "🇯🇵", accent: "#bc002d", group: "B" },
-  // Group C
   { name: "EUA", short: "USA", flag: "🇺🇸", accent: "#3c3b6e", group: "C" },
-  { name: "Inglaterra", short: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", accent: "#ce1124", group: "C" },
+  { name: "Inglaterra", short: "ENG", flag: "🏴", accent: "#ce1124", group: "C" },
   { name: "Senegal", short: "SEN", flag: "🇸🇳", accent: "#00853f", group: "C" },
-  // Group D
   { name: "Brasil", short: "BRA", flag: "🇧🇷", accent: "#ffdf00", group: "D" },
   { name: "Suíça", short: "SUI", flag: "🇨🇭", accent: "#d52b1e", group: "D" },
   { name: "Camarões", short: "CMR", flag: "🇨🇲", accent: "#007a5e", group: "D" },
-  // Group E
   { name: "Argentina", short: "ARG", flag: "🇦🇷", accent: "#75aadb", group: "E" },
   { name: "Países Baixos", short: "NED", flag: "🇳🇱", accent: "#ff6c00", group: "E" },
   { name: "Coreia do Sul", short: "KOR", flag: "🇰🇷", accent: "#cd2e3a", group: "E" },
-  // Group F
   { name: "França", short: "FRA", flag: "🇫🇷", accent: "#0055a4", group: "F" },
   { name: "Uruguai", short: "URU", flag: "🇺🇾", accent: "#7cb9e8", group: "F" },
   { name: "Austrália", short: "AUS", flag: "🇦🇺", accent: "#00843d", group: "F" },
-  // Group G
   { name: "Espanha", short: "ESP", flag: "🇪🇸", accent: "#aa151b", group: "G" },
   { name: "Sérvia", short: "SRB", flag: "🇷🇸", accent: "#c6363c", group: "G" },
   { name: "Costa do Marfim", short: "CIV", flag: "🇨🇮", accent: "#ff7900", group: "G" },
-  // Group H
   { name: "Alemanha", short: "GER", flag: "🇩🇪", accent: "#1a1a1a", group: "H" },
   { name: "Dinamarca", short: "DEN", flag: "🇩🇰", accent: "#c8102e", group: "H" },
   { name: "Egito", short: "EGY", flag: "🇪🇬", accent: "#ce1126", group: "H" },
-  // Group I
   { name: "Portugal", short: "POR", flag: "🇵🇹", accent: "#046a38", group: "I" },
   { name: "Polônia", short: "POL", flag: "🇵🇱", accent: "#dc143c", group: "I" },
   { name: "Gana", short: "GHA", flag: "🇬🇭", accent: "#fcd116", group: "I" },
-  // Group J
   { name: "Bélgica", short: "BEL", flag: "🇧🇪", accent: "#fdda24", group: "J" },
   { name: "Colômbia", short: "COL", flag: "🇨🇴", accent: "#fcd116", group: "J" },
   { name: "Tunísia", short: "TUN", flag: "🇹🇳", accent: "#e70013", group: "J" },
-  // Group K
   { name: "Itália", short: "ITA", flag: "🇮🇹", accent: "#0066cc", group: "K" },
   { name: "Chile", short: "CHI", flag: "🇨🇱", accent: "#d52b1e", group: "K" },
   { name: "Nigéria", short: "NGA", flag: "🇳🇬", accent: "#008753", group: "K" },
-  // Group L
-  { name: "Países de Gales", short: "WAL", flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿", accent: "#c8102e", group: "L" },
+  { name: "Países de Gales", short: "WAL", flag: "🏴", accent: "#c8102e", group: "L" },
   { name: "Paraguai", short: "PAR", flag: "🇵🇾", accent: "#0038a8", group: "L" },
   { name: "Arábia Saudita", short: "KSA", flag: "🇸🇦", accent: "#006c35", group: "L" },
-  // Extras to reach 48
-  { name: "Escócia", short: "SCO", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", accent: "#0065bd", group: "A" },
+  { name: "Escócia", short: "SCO", flag: "🏴", accent: "#0065bd", group: "A" },
   { name: "Peru", short: "PER", flag: "🇵🇪", accent: "#d91023", group: "B" },
   { name: "Argélia", short: "ALG", flag: "🇩🇿", accent: "#006233", group: "C" },
   { name: "Turquia", short: "TUR", flag: "🇹🇷", accent: "#e30a17", group: "D" },
@@ -102,7 +88,7 @@ interface RawSpecial {
 }
 
 const SPECIAL: RawSpecial[] = [
-  { id: "intro", name: "Bem-vindo ao Mundial", short: "FWC", count: 6, accent: "#7c5cff" },
+  { id: "panini", name: "PANINI", short: "PANINI", count: 1, accent: "#e6b450" },
   { id: "trophy", name: "O Troféu", short: "TRP", count: 4, accent: "#e6b450" },
   { id: "mascot", name: "Mascotes 2026", short: "MAS", count: 6, accent: "#ff5e7a" },
   { id: "hosts", name: "Países-Sede", short: "HST", count: 12, accent: "#3da5ff" },
@@ -115,7 +101,7 @@ const SPECIAL: RawSpecial[] = [
 
 export const SECTIONS: Section[] = (() => {
   const list: Section[] = [];
-  let cursor = 1;
+  let cursor = 0;
 
   for (const s of SPECIAL) {
     list.push({
@@ -128,6 +114,7 @@ export const SECTIONS: Section[] = (() => {
       start: cursor,
       end: cursor + s.count - 1,
     });
+
     cursor += s.count;
   }
 
@@ -144,21 +131,24 @@ export const SECTIONS: Section[] = (() => {
       end: cursor + TEAM_STICKERS - 1,
       group: t.group,
     });
+
     cursor += TEAM_STICKERS;
   }
 
   return list;
 })();
 
-// Sanity: should equal 670
 export const ALBUM_TOTAL = SECTIONS.reduce((acc, s) => acc + s.count, 0);
 
-// Map sticker number → section
 const SECTION_BY_STICKER: Section[] = (() => {
   const arr: Section[] = new Array(ALBUM_TOTAL + 1);
+
   for (const s of SECTIONS) {
-    for (let i = s.start; i <= s.end; i++) arr[i] = s;
+    for (let i = s.start; i <= s.end; i++) {
+      arr[i] = s;
+    }
   }
+
   return arr;
 })();
 
@@ -169,6 +159,11 @@ export function sectionOf(n: number): Section | undefined {
 export function stickerCode(n: number): string {
   const s = sectionOf(n);
   if (!s) return String(n);
+
+  if (s.id === "s-panini") {
+    return "PANINI 00";
+  }
+
   const local = n - s.start + 1;
   return `${s.short} ${local.toString().padStart(2, "0")}`;
 }
@@ -176,5 +171,10 @@ export function stickerCode(n: number): string {
 export function stickerLocalIndex(n: number): number {
   const s = sectionOf(n);
   if (!s) return n;
+
+  if (s.id === "s-panini") {
+    return 0;
+  }
+
   return n - s.start + 1;
 }
