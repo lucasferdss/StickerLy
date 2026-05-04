@@ -89,11 +89,6 @@ export function SectionPage({ section, stickers, onToggle, onBack, filter }: Pro
           <h2 className="text-2xl font-semibold tracking-tight mt-1 text-balance">
             {section.name}
           </h2>
-
-          <p className="text-xs text-white/55 mt-1 tabular-nums">
-            #{section.start.toString().padStart(3, "0")} – #
-            {section.end.toString().padStart(3, "0")}
-          </p>
         </div>
 
         <div className="flex items-baseline justify-between mt-5">

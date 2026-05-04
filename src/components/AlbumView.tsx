@@ -22,8 +22,12 @@ export function AlbumView({ stickers, query, setQuery, onOpenSection }: Props) {
 
   const groups = useMemo<Group[]>(() => {
     const q = query.trim().toLowerCase();
+
     const filtered = SECTIONS.filter((s) => {
       if (!q) return true;
+
+      if (s.kind !== "team") return false;
+
       return (
         s.name.toLowerCase().includes(q) ||
         s.short.toLowerCase().includes(q) ||
@@ -31,22 +35,42 @@ export function AlbumView({ stickers, query, setQuery, onOpenSection }: Props) {
       );
     });
 
-    const specials = filtered.filter((s) => s.kind === "special");
+    const specials = q
+      ? []
+      : filtered.filter((s) => s.kind === "special");
+
     const teams = filtered.filter((s) => s.kind === "team");
 
     const byGroup = new Map<string, typeof SECTIONS>();
+
     for (const t of teams) {
       const key = t.group ?? "?";
-      if (!byGroup.has(key)) byGroup.set(key, [] as unknown as typeof SECTIONS);
+
+      if (!byGroup.has(key)) {
+        byGroup.set(key, [] as unknown as typeof SECTIONS);
+      }
+
       (byGroup.get(key) as typeof SECTIONS).push(t);
     }
 
     const result: Group[] = [];
-    if (specials.length) result.push({ key: "special", label: "Páginas Especiais", sections: specials });
+
+    if (specials.length) {
+      result.push({
+        key: "special",
+        label: "Páginas Especiais",
+        sections: specials,
+      });
+    }
+
     Array.from(byGroup.keys())
       .sort()
       .forEach((g) => {
-        result.push({ key: `g-${g}`, label: `Grupo ${g}`, sections: byGroup.get(g)! });
+        result.push({
+          key: `g-${g}`,
+          label: `Grupo ${g}`,
+          sections: byGroup.get(g)!,
+        });
       });
 
     return result;
@@ -55,22 +79,51 @@ export function AlbumView({ stickers, query, setQuery, onOpenSection }: Props) {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3">
-        <StatCard label="Tenho" value={stats.owned} icon={CheckCircle2} tone="success" delay={0.05} />
-        <StatCard label="Faltam" value={stats.missing} icon={CircleDashed} tone="danger" delay={0.1} />
-        <StatCard label="Repetidas" value={stats.repeated} icon={Copy} tone="gold" delay={0.15} />
-        <StatCard label="Total" value={stats.total} icon={Layers} tone="primary" delay={0.2} />
+        <StatCard
+          label="Tenho"
+          value={stats.owned}
+          icon={CheckCircle2}
+          tone="success"
+          delay={0.05}
+        />
+
+        <StatCard
+          label="Faltam"
+          value={stats.missing}
+          icon={CircleDashed}
+          tone="danger"
+          delay={0.1}
+        />
+
+        <StatCard
+          label="Repetidas"
+          value={stats.repeated}
+          icon={Copy}
+          tone="gold"
+          delay={0.15}
+        />
+
+        <StatCard
+          label="Total"
+          value={stats.total}
+          icon={Layers}
+          tone="primary"
+          delay={0.2}
+        />
       </div>
 
       <ProgressBar percent={stats.percent} />
 
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar seleção ou página"
+          placeholder="Buscar seleção"
           className="w-full h-12 pl-11 pr-10 rounded-2xl bg-secondary/80 text-foreground placeholder:text-muted-foreground border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
         />
+
         {query && (
           <button
             onClick={() => setQuery("")}
@@ -88,7 +141,9 @@ export function AlbumView({ stickers, query, setQuery, onOpenSection }: Props) {
           animate={{ opacity: 1 }}
           className="surface rounded-3xl p-10 text-center"
         >
-          <p className="text-sm text-muted-foreground">Nenhuma página encontrada.</p>
+          <p className="text-sm text-muted-foreground">
+            Nenhuma seleção encontrada.
+          </p>
         </motion.div>
       ) : (
         <div className="space-y-6 pb-4">
@@ -97,6 +152,7 @@ export function AlbumView({ stickers, query, setQuery, onOpenSection }: Props) {
               <h2 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground px-1">
                 {g.label}
               </h2>
+
               <div className="space-y-2">
                 {g.sections.map((s, i) => (
                   <SectionRow

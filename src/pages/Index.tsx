@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { RotateCcw } from "lucide-react";
 import type { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
@@ -10,9 +9,10 @@ import { SectionPage } from "@/components/SectionPage";
 import { StatsView } from "@/components/StatsView";
 import { ResetDialog } from "@/components/ResetDialog";
 import { AuthModal } from "@/components/AuthModal";
+import { StickerCard } from "@/components/StickerCard";
 
 import type { Filter } from "@/components/FilterBar";
-import { SECTIONS } from "@/lib/album";
+import { SECTIONS, sectionOf } from "@/lib/album";
 import { auth } from "@/lib/firebase";
 import { logoutUser } from "@/lib/auth";
 import {
@@ -62,29 +62,29 @@ const Index = () => {
     return () => unsubscribe();
   }, [user]);
 
-  useEffect(() => {
-    if (!activeSectionId && restoreSectionIdRef.current) {
-      const id = restoreSectionIdRef.current;
-
-      requestAnimationFrame(() => {
-        const el = document.getElementById(`section-row-${id}`);
-
-        if (el) {
-          el.scrollIntoView({
-            behavior: "auto",
-            block: "center",
-          });
-        }
-
-        restoreSectionIdRef.current = null;
-      });
-    }
-  }, [activeSectionId]);
-
   const activeSection = useMemo(
     () => SECTIONS.find((s) => s.id === activeSectionId) ?? null,
     [activeSectionId]
   );
+
+  const repeatedGrouped = useMemo(() => {
+    const groups: Record<string, number[]> = {};
+
+    Object.entries(stickers).forEach(([nStr, status]) => {
+      if (status !== "repeated") return;
+
+      const n = Number(nStr);
+      const section = sectionOf(n);
+      if (!section) return;
+
+      if (!groups[section.id]) groups[section.id] = [];
+      groups[section.id].push(n);
+    });
+
+    Object.values(groups).forEach((list) => list.sort((a, b) => a - b));
+
+    return groups;
+  }, [stickers]);
 
   const toggleSticker = (n: number) => {
     if (!user) return;
@@ -100,7 +100,20 @@ const Index = () => {
       else copy[n] = next;
 
       saveCloudSticker(user.uid, n, next);
+      return copy;
+    });
+  };
 
+  const removeRepeatedSticker = (n: number) => {
+    if (!user) return;
+
+    vibrate(8);
+
+    setStickers((prev) => {
+      const copy = { ...prev };
+      copy[n] = "owned";
+
+      saveCloudSticker(user.uid, n, "owned");
       return copy;
     });
   };
@@ -113,16 +126,8 @@ const Index = () => {
     setStickers({});
     setResetOpen(false);
     setActiveSectionId(null);
-    restoreSectionIdRef.current = null;
-    window.scrollTo({ top: 0, behavior: "auto" });
 
     await clearCloudStickers(user.uid);
-  };
-
-  const handleOpenSection = (id: string) => {
-    restoreSectionIdRef.current = id;
-    setActiveSectionId(id);
-    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   const handleLogout = async () => {
@@ -130,8 +135,6 @@ const Index = () => {
     setUser(null);
     setStickers({});
     setActiveSectionId(null);
-    restoreSectionIdRef.current = null;
-    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   const avatarLetter =
@@ -141,7 +144,7 @@ const Index = () => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6">
+      <div className="min-h-screen flex items-center justify-center">
         <p className="text-sm text-muted-foreground">Carregando...</p>
       </div>
     );
@@ -150,19 +153,15 @@ const Index = () => {
   if (!user) {
     return (
       <>
-        <div className="min-h-screen flex items-center justify-center px-6 text-center">
-          <div className="max-w-sm">
-            <h1 className="text-4xl font-semibold tracking-tight">StickerLy</h1>
-
-            <p className="text-sm text-muted-foreground mt-3">
-              Crie uma conta ou faça login para gerenciar seu álbum da Copa 2026.
-            </p>
+        <div className="min-h-screen flex items-center justify-center text-center">
+          <div>
+            <h1 className="text-3xl font-semibold">StickerLy</h1>
 
             <button
               onClick={() => setAuthOpen(true)}
-              className="mt-7 h-12 px-6 rounded-2xl bg-primary text-primary-foreground text-sm font-semibold active:scale-95 transition"
+              className="mt-6 h-12 px-6 rounded-2xl bg-primary text-primary-foreground"
             >
-              Entrar ou criar conta
+              Entrar
             </button>
           </div>
         </div>
@@ -186,7 +185,7 @@ const Index = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 rounded-full bg-secondary/80 border border-white/5 pl-1 pr-3 py-1 active:scale-95 transition"
+              className="h-9 rounded-full bg-secondary/80 border border-white/5 pl-1 pr-3 flex items-center gap-2 active:scale-95 transition"
             >
               {user.photoURL ? (
                 <img
@@ -205,39 +204,53 @@ const Index = () => {
 
             <button
               onClick={() => setResetOpen(true)}
-              className="h-9 w-9 rounded-full bg-secondary/80 border border-white/5 flex items-center justify-center text-muted-foreground active:scale-95 transition-transform"
-              aria-label="Zerar álbum"
+              className="h-9 rounded-full bg-secondary/80 border border-white/5 px-3 flex items-center gap-2 text-muted-foreground active:scale-95 transition"
+              aria-label="Redefinir álbum"
             >
               <RotateCcw className="h-4 w-4" />
+              <span className="text-xs">Redefinir</span>
             </button>
           </div>
         </div>
 
         <div className="max-w-2xl mx-auto px-4 pb-4 flex justify-center">
-          <SegmentedTabs
-            tab={tab}
-            onChange={(t) => {
-              setTab(t);
-              setActiveSectionId(null);
-              restoreSectionIdRef.current = null;
-              window.scrollTo({ top: 0, behavior: "auto" });
-            }}
-          />
+          <SegmentedTabs tab={tab} onChange={setTab} />
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 pt-5">
         {tab === "stats" ? (
-          <motion.div
-            key="stats"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <StatsView stickers={stickers} />
-          </motion.div>
+          <StatsView stickers={stickers} />
+        ) : tab === "repeated" ? (
+          <div className="space-y-6">
+            {Object.entries(repeatedGrouped).map(([sectionId, list]) => {
+              const section = SECTIONS.find((s) => s.id === sectionId);
+              if (!section) return null;
+
+              return (
+                <div key={sectionId} className="space-y-2">
+                  <h2 className="text-xs uppercase text-muted-foreground px-1">
+                    {section.name}
+                  </h2>
+
+                  <div className="grid grid-cols-4 sm:grid-cols-5 gap-2.5">
+                    {list.map((n) => (
+                      <StickerCard
+                        key={n}
+                        number={n}
+                        status={getStatus(stickers, n)}
+                        onToggle={removeRepeatedSticker}
+                        short={section.short}
+                        accent={section.accent}
+                      />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         ) : activeSection ? (
           <SectionPage
-            key={`section-${activeSection.id}`}
             section={activeSection}
             stickers={stickers}
             onToggle={toggleSticker}
@@ -245,18 +258,16 @@ const Index = () => {
             filter={filter}
           />
         ) : (
-          <motion.div
-            key="album-index"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <AlbumView
-              stickers={stickers}
-              query={query}
-              setQuery={setQuery}
-              onOpenSection={handleOpenSection}
-            />
-          </motion.div>
+          <AlbumView
+            stickers={stickers}
+            query={query}
+            setQuery={setQuery}
+            onOpenSection={(id) => {
+              restoreSectionIdRef.current = id;
+              setActiveSectionId(id);
+              window.scrollTo({ top: 0, behavior: "auto" });
+            }}
+          />
         )}
       </main>
 

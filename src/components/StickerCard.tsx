@@ -8,21 +8,19 @@ interface Props {
   number: number;
   status: StickerStatus;
   onToggle: (n: number) => void;
-  short?: string;       // e.g. "BRA"
-  accent?: string;      // hex used in gradient when owned
+  short?: string;
+  accent?: string;
 }
 
 const styles: Record<StickerStatus, string> = {
-  missing:
-    "bg-surface text-muted-foreground border-white/5",
-  owned:
-    "text-success-foreground border-transparent shadow-soft",
-  repeated:
-    "bg-gradient-gold text-gold-foreground border-transparent shadow-gold",
+  missing: "bg-surface text-muted-foreground border-white/5",
+  owned: "text-success-foreground border-transparent shadow-soft",
+  repeated: "bg-gradient-gold text-gold-foreground border-transparent shadow-gold",
 };
 
 export function StickerCard({ number, status, onToggle, short, accent }: Props) {
   const local = stickerLocalIndex(number);
+
   const ownedBg =
     status === "owned" && accent
       ? { backgroundImage: `linear-gradient(135deg, ${accent}, ${accent}cc)` }
@@ -48,11 +46,9 @@ export function StickerCard({ number, status, onToggle, short, accent }: Props) 
           {short}
         </span>
       )}
+
       <span className="text-xl font-semibold tabular-nums leading-none mt-1">
         {local.toString().padStart(2, "0")}
-      </span>
-      <span className="text-[9px] font-medium tabular-nums opacity-50 mt-1">
-        #{number}
       </span>
 
       {status === "owned" && (
@@ -64,6 +60,7 @@ export function StickerCard({ number, status, onToggle, short, accent }: Props) 
           <Check className="h-2.5 w-2.5" strokeWidth={3} />
         </motion.div>
       )}
+
       {status === "repeated" && (
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
