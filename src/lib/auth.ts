@@ -1,9 +1,12 @@
 import {
   GoogleAuthProvider,
+  EmailAuthProvider,
   createUserWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
+  linkWithCredential,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
-  sendPasswordResetEmail,
   signOut,
   updateProfile,
 } from "firebase/auth";
@@ -16,15 +19,78 @@ export async function loginWithGoogle() {
 }
 
 export async function loginWithEmail(email: string, password: string) {
-  return signInWithEmailAndPassword(auth, email, password);
+  const cleanEmail = email.trim().toLowerCase();
+
+  try {
+    return await signInWithEmailAndPassword(auth, cleanEmail, password);
+  } catch (error: any) {
+    const methods = await fetchSignInMethodsForEmail(auth, cleanEmail);
+
+    if (methods.includes("google.com")) {
+      const result = await signInWithPopup(auth, googleProvider);
+
+      if (result.user.email?.toLowerCase() === cleanEmail) {
+        const credential = EmailAuthProvider.credential(cleanEmail, password);
+
+        try {
+          await linkWithCredential(result.user, credential);
+        } catch (linkError: any) {
+          if (linkError.code !== "auth/provider-already-linked") {
+            throw linkError;
+          }
+        }
+
+        return result;
+      }
+    }
+
+    throw error;
+  }
 }
 
-export async function registerWithEmail(name: string, email: string, password: string) {
-  const result = await createUserWithEmailAndPassword(auth, email, password);
+export async function registerWithEmail(
+  name: string,
+  email: string,
+  password: string
+) {
+  const cleanName = name.trim();
+  const cleanEmail = email.trim().toLowerCase();
 
-  if (name.trim()) {
+  const methods = await fetchSignInMethodsForEmail(auth, cleanEmail);
+
+  if (methods.includes("google.com")) {
+    const result = await signInWithPopup(auth, googleProvider);
+
+    if (result.user.email?.toLowerCase() === cleanEmail) {
+      const credential = EmailAuthProvider.credential(cleanEmail, password);
+
+      try {
+        await linkWithCredential(result.user, credential);
+      } catch (linkError: any) {
+        if (linkError.code !== "auth/provider-already-linked") {
+          throw linkError;
+        }
+      }
+
+      if (cleanName && !result.user.displayName) {
+        await updateProfile(result.user, {
+          displayName: cleanName,
+        });
+      }
+
+      return result;
+    }
+  }
+
+  const result = await createUserWithEmailAndPassword(
+    auth,
+    cleanEmail,
+    password
+  );
+
+  if (cleanName) {
     await updateProfile(result.user, {
-      displayName: name.trim(),
+      displayName: cleanName,
     });
   }
 
@@ -32,7 +98,8 @@ export async function registerWithEmail(name: string, email: string, password: s
 }
 
 export async function resetPassword(email: string) {
-  return sendPasswordResetEmail(auth, email);
+  const cleanEmail = email.trim().toLowerCase();
+  return sendPasswordResetEmail(auth, cleanEmail);
 }
 
 export async function logoutUser() {

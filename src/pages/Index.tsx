@@ -22,8 +22,6 @@ import {
 } from "@/lib/cloudStickers";
 
 import {
-  loadStickers,
-  saveStickers,
   nextStatus,
   getStatus,
   vibrate,
@@ -49,10 +47,6 @@ const Index = () => {
     const unsubAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setAuthLoading(false);
-
-      if (!currentUser) {
-        setStickers(loadStickers());
-      }
     });
 
     return () => unsubAuth();
@@ -67,12 +61,6 @@ const Index = () => {
 
     return () => unsubscribe();
   }, [user]);
-
-  useEffect(() => {
-    if (!user && !authLoading) {
-      saveStickers(stickers);
-    }
-  }, [stickers, user, authLoading]);
 
   useEffect(() => {
     if (!activeSectionId && restoreSectionIdRef.current) {
@@ -99,6 +87,8 @@ const Index = () => {
   );
 
   const toggleSticker = (n: number) => {
+    if (!user) return;
+
     vibrate(8);
 
     setStickers((prev) => {
@@ -109,15 +99,15 @@ const Index = () => {
       if (next === "missing") delete copy[n];
       else copy[n] = next;
 
-      if (user) {
-        saveCloudSticker(user.uid, n, next);
-      }
+      saveCloudSticker(user.uid, n, next);
 
       return copy;
     });
   };
 
   const handleReset = async () => {
+    if (!user) return;
+
     vibrate([10, 30, 10]);
 
     setStickers({});
@@ -126,11 +116,7 @@ const Index = () => {
     restoreSectionIdRef.current = null;
     window.scrollTo({ top: 0, behavior: "auto" });
 
-    if (user) {
-      await clearCloudStickers(user.uid);
-    } else {
-      saveStickers({});
-    }
+    await clearCloudStickers(user.uid);
   };
 
   const handleOpenSection = (id: string) => {
@@ -142,13 +128,49 @@ const Index = () => {
   const handleLogout = async () => {
     await logoutUser();
     setUser(null);
-    setStickers(loadStickers());
+    setStickers({});
+    setActiveSectionId(null);
+    restoreSectionIdRef.current = null;
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   const avatarLetter =
     user?.displayName?.charAt(0).toUpperCase() ||
     user?.email?.charAt(0).toUpperCase() ||
     "U";
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <p className="text-sm text-muted-foreground">Carregando...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <>
+        <div className="min-h-screen flex items-center justify-center px-6 text-center">
+          <div className="max-w-sm">
+            <h1 className="text-4xl font-semibold tracking-tight">StickerLy</h1>
+
+            <p className="text-sm text-muted-foreground mt-3">
+              Crie uma conta ou faça login para gerenciar seu álbum da Copa 2026.
+            </p>
+
+            <button
+              onClick={() => setAuthOpen(true)}
+              className="mt-7 h-12 px-6 rounded-2xl bg-primary text-primary-foreground text-sm font-semibold active:scale-95 transition"
+            >
+              Entrar ou criar conta
+            </button>
+          </div>
+        </div>
+
+        <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+      </>
+    );
+  }
 
   return (
     <div className="min-h-full pb-16">
@@ -162,33 +184,24 @@ const Index = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            {user ? (
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 rounded-full bg-secondary/80 border border-white/5 pl-1 pr-3 py-1 active:scale-95 transition"
-              >
-                {user.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt="Avatar"
-                    className="h-8 w-8 rounded-full object-cover"
-                  />
-                ) : (
-                  <span className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
-                    {avatarLetter}
-                  </span>
-                )}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 rounded-full bg-secondary/80 border border-white/5 pl-1 pr-3 py-1 active:scale-95 transition"
+            >
+              {user.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="Avatar"
+                  className="h-8 w-8 rounded-full object-cover"
+                />
+              ) : (
+                <span className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
+                  {avatarLetter}
+                </span>
+              )}
 
-                <span className="text-xs text-muted-foreground">Sair</span>
-              </button>
-            ) : (
-              <button
-                onClick={() => setAuthOpen(true)}
-                className="h-9 px-4 rounded-full bg-primary text-primary-foreground text-xs font-semibold active:scale-95 transition"
-              >
-                Entrar
-              </button>
-            )}
+              <span className="text-xs text-muted-foreground">Sair</span>
+            </button>
 
             <button
               onClick={() => setResetOpen(true)}
@@ -246,8 +259,6 @@ const Index = () => {
           </motion.div>
         )}
       </main>
-
-      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
 
       <ResetDialog
         open={resetOpen}
