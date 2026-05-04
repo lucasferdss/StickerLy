@@ -38,7 +38,7 @@ export function SectionPage({ section, stickers, onToggle, onBack, filter }: Pro
 
     touchStartX.current = touch.clientX;
     touchStartY.current = touch.clientY;
-    isEdgeSwipe.current = touch.clientX <= 90;
+    isEdgeSwipe.current = touch.clientX <= 140;
   };
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -48,7 +48,7 @@ export function SectionPage({ section, stickers, onToggle, onBack, filter }: Pro
     const diffX = touch.clientX - touchStartX.current;
     const diffY = Math.abs(touch.clientY - touchStartY.current);
 
-    if (diffX > 35 && diffY < 120) {
+    if (diffX > 20 && diffY < 160) {
       onBack();
     }
 
