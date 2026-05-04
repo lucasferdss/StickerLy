@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ChevronLeft, Copy, CircleDashed, CheckCircle2 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import type { Section } from "@/lib/album";
 import { computeSectionStats, getStatus, type StickersMap } from "@/lib/stickers";
 import { StickerCard } from "@/components/StickerCard";
@@ -16,16 +16,44 @@ interface Props {
 }
 
 export function SectionPage({ section, stickers, onToggle, onBack, filter }: Props) {
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const isEdgeSwipe = useRef(false);
+
   const stats = useMemo(() => computeSectionStats(stickers, section), [stickers, section]);
 
   const visible = useMemo(() => {
     const list: number[] = [];
+
     for (let i = section.start; i <= section.end; i++) {
       if (!statusMatchesFilter(getStatus(stickers, i), filter)) continue;
       list.push(i);
     }
+
     return list;
   }, [stickers, section, filter]);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0];
+
+    touchStartX.current = touch.clientX;
+    touchStartY.current = touch.clientY;
+    isEdgeSwipe.current = touch.clientX <= 35;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isEdgeSwipe.current) return;
+
+    const touch = e.changedTouches[0];
+    const diffX = touch.clientX - touchStartX.current;
+    const diffY = Math.abs(touch.clientY - touchStartY.current);
+
+    if (diffX > 70 && diffY < 80) {
+      onBack();
+    }
+
+    isEdgeSwipe.current = false;
+  };
 
   return (
     <motion.div
@@ -34,6 +62,8 @@ export function SectionPage({ section, stickers, onToggle, onBack, filter }: Pro
       exit={{ opacity: 0, x: -8 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className="space-y-5"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       <button
         onClick={onBack}
@@ -51,7 +81,9 @@ export function SectionPage({ section, stickers, onToggle, onBack, filter }: Pro
       >
         <div className="min-w-0">
           <div className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
-            {section.kind === "team" ? `Grupo ${section.group} · ${section.short}` : "Página Especial"}
+            {section.kind === "team"
+              ? `Grupo ${section.group} · ${section.short}`
+              : "Página Especial"}
           </div>
 
           <h2 className="text-2xl font-semibold tracking-tight mt-1 text-balance">
@@ -59,7 +91,8 @@ export function SectionPage({ section, stickers, onToggle, onBack, filter }: Pro
           </h2>
 
           <p className="text-xs text-white/55 mt-1 tabular-nums">
-            #{section.start.toString().padStart(3, "0")} – #{section.end.toString().padStart(3, "0")}
+            #{section.start.toString().padStart(3, "0")} – #
+            {section.end.toString().padStart(3, "0")}
           </p>
         </div>
 
