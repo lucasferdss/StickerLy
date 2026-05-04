@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { RotateCcw } from "lucide-react";
 import { SegmentedTabs, type Tab } from "@/components/SegmentedTabs";
 import { AlbumView } from "@/components/AlbumView";
@@ -25,14 +25,35 @@ const Index = () => {
   const [resetOpen, setResetOpen] = useState(false);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
 
+  const restoreSectionIdRef = useRef<string | null>(null);
+
   useEffect(() => {
     setStickers(loadStickers());
-    document.title = "Copa Sticker — Álbum 2026";
+    document.title = "StickerLy — FIFA WORLD CUP 2026";
   }, []);
 
   useEffect(() => {
     saveStickers(stickers);
   }, [stickers]);
+
+  useEffect(() => {
+    if (!activeSectionId && restoreSectionIdRef.current) {
+      const id = restoreSectionIdRef.current;
+
+      requestAnimationFrame(() => {
+        const el = document.getElementById(`section-row-${id}`);
+
+        if (el) {
+          el.scrollIntoView({
+            behavior: "auto",
+            block: "center",
+          });
+        }
+
+        restoreSectionIdRef.current = null;
+      });
+    }
+  }, [activeSectionId]);
 
   const activeSection = useMemo(
     () => SECTIONS.find((s) => s.id === activeSectionId) ?? null,
@@ -41,12 +62,15 @@ const Index = () => {
 
   const toggleSticker = (n: number) => {
     vibrate(8);
+
     setStickers((prev) => {
       const cur = getStatus(prev, n);
       const next = nextStatus(cur);
       const copy = { ...prev };
+
       if (next === "missing") delete copy[n];
       else copy[n] = next;
+
       return copy;
     });
   };
@@ -55,6 +79,21 @@ const Index = () => {
     vibrate([10, 30, 10]);
     setStickers({});
     setResetOpen(false);
+    setActiveSectionId(null);
+    restoreSectionIdRef.current = null;
+    window.scrollTo({ top: 0, behavior: "auto" });
+  };
+
+  const handleOpenSection = (id: string) => {
+    restoreSectionIdRef.current = id;
+    setActiveSectionId(id);
+
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    });
+  };
+
+  const handleBackToAlbum = () => {
     setActiveSectionId(null);
   };
 
@@ -84,52 +123,47 @@ const Index = () => {
             onChange={(t) => {
               setTab(t);
               setActiveSectionId(null);
+              restoreSectionIdRef.current = null;
+              window.scrollTo({ top: 0, behavior: "auto" });
             }}
           />
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 pt-5">
-        <AnimatePresence mode="wait">
-          {tab === "stats" ? (
-            <motion.div
-              key="stats"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <StatsView stickers={stickers} />
-            </motion.div>
-          ) : activeSection ? (
-            <SectionPage
-              key={`section-${activeSection.id}`}
-              section={activeSection}
+        {tab === "stats" ? (
+          <motion.div
+            key="stats"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <StatsView stickers={stickers} />
+          </motion.div>
+        ) : activeSection ? (
+          <SectionPage
+            key={`section-${activeSection.id}`}
+            section={activeSection}
+            stickers={stickers}
+            onToggle={toggleSticker}
+            onBack={handleBackToAlbum}
+            filter={filter}
+          />
+        ) : (
+          <motion.div
+            key="album-index"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.15 }}
+          >
+            <AlbumView
               stickers={stickers}
-              onToggle={toggleSticker}
-              onBack={() => setActiveSectionId(null)}
-              filter={filter}
+              query={query}
+              setQuery={setQuery}
+              onOpenSection={handleOpenSection}
             />
-          ) : (
-            <motion.div
-              key="album-index"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <AlbumView
-                stickers={stickers}
-                query={query}
-                setQuery={setQuery}
-                onOpenSection={(id) => {
-                  setActiveSectionId(id);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+          </motion.div>
+        )}
       </main>
 
       <ResetDialog

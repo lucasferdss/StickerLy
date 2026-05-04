@@ -3,7 +3,6 @@ import { ChevronRight, Check } from "lucide-react";
 import type { Section } from "@/lib/album";
 import type { StickersMap } from "@/lib/stickers";
 import { computeSectionStats } from "@/lib/stickers";
-import { cn } from "@/lib/utils";
 
 interface Props {
   section: Section;
@@ -15,9 +14,11 @@ interface Props {
 export function SectionRow({ section, stickers, onOpen, delay = 0 }: Props) {
   const stats = computeSectionStats(stickers, section);
   const complete = stats.percent >= 100;
+  const accent = section.accent ?? "hsl(var(--foreground))";
 
   return (
     <motion.button
+      id={`section-row-${section.id}`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] }}
@@ -46,10 +47,10 @@ export function SectionRow({ section, stickers, onOpen, delay = 0 }: Props) {
               initial={{ width: 0 }}
               animate={{ width: `${stats.percent}%` }}
               transition={{ duration: 0.9, delay: delay + 0.05, ease: [0.22, 1, 0.36, 1] }}
-              className={cn(
-                "h-full rounded-full",
-                complete ? "bg-[hsl(var(--success))]" : "bg-foreground/85"
-              )}
+              className="h-full rounded-full"
+              style={{
+                background: complete ? "hsl(var(--success))" : accent,
+              }}
             />
           </div>
 
