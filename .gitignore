@@ -3,15 +3,18 @@ node_modules/
 .pnp/
 .pnp.js
 
-# Build outputs
+# Build
 dist/
 build/
 out/
-.next/
-.nuxt/
-.output/
 
-# Env files
+# Vite / cache
+.vite/
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# Environment variables
 .env
 .env.*
 !.env.example
@@ -21,74 +24,46 @@ logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
 bun-debug.log*
 
-# Cache
-.cache/
-.parcel-cache/
-.vite/
-.turbo/
-.eslintcache
-.stylelintcache
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
 
-# TypeScript
-*.tsbuildinfo
-
-# Test coverage
-coverage/
-.nyc_output/
-
-# IDE / Editors
+# IDE
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
 .idea/
-*.swp
-*.swo
 
-# OS files
-.DS_Store
-.AppleDouble
-.LSOverride
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# Local certificates / keys
+# Local certs / keys
 *.pem
 *.key
 *.crt
 *.p12
 *.pfx
 
-# Database / local data
+# Local database / temp
 *.sqlite
 *.sqlite3
 *.db
-*.db-journal
-
-# Temporary files
 tmp/
 temp/
-.tmp/
 *.tmp
 *.bak
 *.backup
 
-# Supabase / local services
-.supabase/
-supabase/.branches/
-supabase/.temp/
-
-# Vercel / Netlify
+# Deploy platforms
 .vercel/
 .netlify/
 
+# Coverage / tests
+coverage/
+.nyc_output/
 
-# Misc
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Package managers not used
+bun.lockb
+yarn.lock
+pnpm-lock.yaml
