@@ -220,7 +220,7 @@ const Index = () => {
 
       <main className="max-w-2xl mx-auto px-4 pt-5">
         {tab === "stats" ? (
-          <StatsView stickers={stickers} />
+          <StatsView stickers={stickers} userId={user.uid} />
         ) : tab === "repeated" ? (
           <div className="space-y-6">
             {Object.entries(repeatedGrouped).map(([sectionId, list]) => {
