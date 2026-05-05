@@ -5,8 +5,8 @@ import { ProgressBar } from "@/components/BarraProgresso";
 import { SectionRow } from "@/components/LinhaSecao";
 import { StatCard } from "@/components/CardEstatistica";
 import { CheckCircle2, CircleDashed, Copy, Layers } from "lucide-react";
-import { computeStats, type StickersMap } from "@/lib/stickers";
-import { SECTIONS } from "@/lib/album";
+import { computeStats, type StickersMap } from "@/lib/figurinhas";
+import { SECTIONS } from "@/lib/albumFigurinhas";
 
 interface Props {
   stickers: StickersMap;

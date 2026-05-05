@@ -1,4 +1,4 @@
-import { ALBUM_TOTAL, type Section } from "./album";
+import { ALBUM_TOTAL, type Section } from "./albumFigurinhas";
 
 export const TOTAL_STICKERS = ALBUM_TOTAL;
 

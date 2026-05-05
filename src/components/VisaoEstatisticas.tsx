@@ -6,13 +6,13 @@ import { ProgressCircle } from "@/components/CirculoProgresso";
 import { InsightCard } from "@/components/CardInsight";
 import { CircleDashed, CheckCircle2, Copy, Trophy } from "lucide-react";
 
-import { computeStats, type StickersMap } from "@/lib/stickers";
+import { computeStats, type StickersMap } from "@/lib/figurinhas";
 import {
   subscribeCloudExpenses,
   addCloudExpense,
   deleteCloudExpense,
   type Expense,
-} from "@/lib/cloudExpenses";
+} from "@/lib/gastosNuvem";
 
 interface Props {
   stickers: StickersMap;

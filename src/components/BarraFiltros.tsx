@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Search, X } from "lucide-react";
-import type { StickerStatus } from "@/lib/stickers";
+import type { StickerStatus } from "@/lib/figurinhas";
 
 export type Filter = "all" | "owned" | "missing" | "repeated";
 

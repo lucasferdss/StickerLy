@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Check, Copy } from "lucide-react";
-import type { StickerStatus } from "@/lib/stickers";
-import { stickerLocalIndex } from "@/lib/album";
-import { cn } from "@/lib/utils";
+import type { StickerStatus } from "@/lib/figurinhas";
+import { stickerLocalIndex } from "@/lib/albumFigurinhas";
+import { cn } from "@/lib/utilitarios";
 
 interface Props {
   number: number;

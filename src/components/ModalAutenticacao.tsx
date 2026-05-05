@@ -5,7 +5,7 @@ import {
   loginWithGoogle,
   registerWithEmail,
   resetPassword,
-} from "@/lib/auth";
+} from "@/lib/autenticacao";
 
 interface Props {
   open: boolean;

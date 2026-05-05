@@ -8,8 +8,8 @@ import {
   setDoc,
   writeBatch,
 } from "firebase/firestore";
-import { db } from "./firebase";
-import type { StickerStatus, StickersMap } from "./stickers";
+import { db } from "./firebaseConfig";
+import type { StickerStatus, StickersMap } from "./figurinhas";
 
 function stickersCollection(userId: string) {
   return collection(db, "users", userId, "stickers");

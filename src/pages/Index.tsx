@@ -12,21 +12,21 @@ import { AuthModal } from "@/components/ModalAutenticacao";
 import { StickerCard } from "@/components/CardFigurinha";
 
 import type { Filter } from "@/components/BarraFiltros";
-import { SECTIONS, sectionOf } from "@/lib/album";
-import { auth } from "@/lib/firebase";
-import { logoutUser } from "@/lib/auth";
+import { SECTIONS, sectionOf } from "@/lib/albumFigurinhas";
+import { auth } from "@/lib/firebaseConfig";
+import { logoutUser } from "@/lib/autenticacao";
 import {
   subscribeCloudStickers,
   saveCloudSticker,
   clearCloudStickers,
-} from "@/lib/cloudStickers";
+} from "@/lib/figurinhasNuvem";
 
 import {
   nextStatus,
   getStatus,
   vibrate,
   type StickersMap,
-} from "@/lib/stickers";
+} from "@/lib/figurinhas";
 
 const Index = () => {
   const [stickers, setStickers] = useState<StickersMap>({});

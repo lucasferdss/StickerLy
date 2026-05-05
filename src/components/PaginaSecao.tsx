@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { ChevronLeft, Copy, CircleDashed, CheckCircle2 } from "lucide-react";
 import { useMemo, useRef } from "react";
-import type { Section } from "@/lib/album";
-import { computeSectionStats, getStatus, type StickersMap } from "@/lib/stickers";
+import type { Section } from "@/lib/albumFigurinhas";
+import { computeSectionStats, getStatus, type StickersMap } from "@/lib/figurinhas";
 import { StickerCard } from "@/components/CardFigurinha";
 import type { Filter } from "@/components/BarraFiltros";
 import { statusMatchesFilter } from "@/components/BarraFiltros";

@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { ChevronRight, Check } from "lucide-react";
-import type { Section } from "@/lib/album";
-import type { StickersMap } from "@/lib/stickers";
-import { computeSectionStats } from "@/lib/stickers";
+import type { Section } from "@/lib/albumFigurinhas";
+import type { StickersMap } from "@/lib/figurinhas";
+import { computeSectionStats } from "@/lib/figurinhas";
 
 interface Props {
   section: Section;
