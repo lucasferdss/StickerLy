@@ -39,6 +39,7 @@ const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
 
+  // 🔥 ESSA LINHA É A CHAVE DO SCROLL
   const restoreSectionIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -205,7 +206,6 @@ const Index = () => {
             <button
               onClick={() => setResetOpen(true)}
               className="h-9 rounded-full bg-secondary/80 border border-white/5 px-3 flex items-center gap-2 text-muted-foreground active:scale-95 transition"
-              aria-label="Redefinir álbum"
             >
               <RotateCcw className="h-4 w-4" />
               <span className="text-xs">Redefinir</span>
@@ -254,7 +254,25 @@ const Index = () => {
             section={activeSection}
             stickers={stickers}
             onToggle={toggleSticker}
-            onBack={() => setActiveSectionId(null)}
+            onBack={() => {
+              setActiveSectionId(null);
+
+              requestAnimationFrame(() => {
+                const id = restoreSectionIdRef.current;
+                if (!id) return;
+
+                const el = document.getElementById(`section-row-${id}`);
+
+                if (el) {
+                  el.scrollIntoView({
+                    behavior: "auto",
+                    block: "center",
+                  });
+                }
+
+                restoreSectionIdRef.current = null;
+              });
+            }}
             filter={filter}
           />
         ) : (
