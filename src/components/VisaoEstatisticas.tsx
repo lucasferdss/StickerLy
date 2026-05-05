@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { useMemo, useEffect, useState } from "react";
 import { Trash2, Plus } from "lucide-react";
 
-import { ProgressCircle } from "@/components/ProgressCircle";
-import { InsightCard } from "@/components/InsightCard";
+import { ProgressCircle } from "@/components/CirculoProgresso";
+import { InsightCard } from "@/components/CardInsight";
 import { CircleDashed, CheckCircle2, Copy, Trophy } from "lucide-react";
 
 import { computeStats, type StickersMap } from "@/lib/stickers";

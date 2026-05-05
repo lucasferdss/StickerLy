@@ -3,9 +3,9 @@ import { ChevronLeft, Copy, CircleDashed, CheckCircle2 } from "lucide-react";
 import { useMemo, useRef } from "react";
 import type { Section } from "@/lib/album";
 import { computeSectionStats, getStatus, type StickersMap } from "@/lib/stickers";
-import { StickerCard } from "@/components/StickerCard";
-import type { Filter } from "@/components/FilterBar";
-import { statusMatchesFilter } from "@/components/FilterBar";
+import { StickerCard } from "@/components/CardFigurinha";
+import type { Filter } from "@/components/BarraFiltros";
+import { statusMatchesFilter } from "@/components/BarraFiltros";
 
 interface Props {
   section: Section;

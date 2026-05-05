@@ -3,15 +3,15 @@ import { RotateCcw } from "lucide-react";
 import type { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 
-import { SegmentedTabs, type Tab } from "@/components/SegmentedTabs";
-import { AlbumView } from "@/components/AlbumView";
-import { SectionPage } from "@/components/SectionPage";
-import { StatsView } from "@/components/StatsView";
-import { ResetDialog } from "@/components/ResetDialog";
-import { AuthModal } from "@/components/AuthModal";
-import { StickerCard } from "@/components/StickerCard";
+import { SegmentedTabs, type Tab } from "@/components/AbasSegmentadas";
+import { AlbumView } from "@/components/VisaoAlbum";
+import { SectionPage } from "@/components/PaginaSecao";
+import { StatsView } from "@/components/VisaoEstatisticas";
+import { ResetDialog } from "@/components/DialogoRedefinir";
+import { AuthModal } from "@/components/ModalAutenticacao";
+import { StickerCard } from "@/components/CardFigurinha";
 
-import type { Filter } from "@/components/FilterBar";
+import type { Filter } from "@/components/BarraFiltros";
 import { SECTIONS, sectionOf } from "@/lib/album";
 import { auth } from "@/lib/firebase";
 import { logoutUser } from "@/lib/auth";
