@@ -86,10 +86,6 @@ supabase/.temp/
 .vercel/
 .netlify/
 
-# Lovable / generated local artifacts
-.lovable/
-lovable/
-.lovable-cache/
 
 # Misc
 .env.local
