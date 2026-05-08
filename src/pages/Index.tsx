@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import type { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-
 import { SegmentedTabs, type Tab } from "@/components/AbasSegmentadas";
 import { AlbumView } from "@/components/VisaoAlbum";
 import { SectionPage } from "@/components/PaginaSecao";
@@ -10,23 +9,12 @@ import { StatsView } from "@/components/VisaoEstatisticas";
 import { ResetDialog } from "@/components/DialogoRedefinir";
 import { AuthModal } from "@/components/ModalAutenticacao";
 import { StickerCard } from "@/components/CardFigurinha";
-
 import type { Filter } from "@/components/BarraFiltros";
 import { SECTIONS, sectionOf } from "@/lib/albumFigurinhas";
 import { auth } from "@/lib/firebaseConfig";
 import { logoutUser } from "@/lib/autenticacao";
-import {
-  subscribeCloudStickers,
-  saveCloudSticker,
-  clearCloudStickers,
-} from "@/lib/figurinhasNuvem";
-
-import {
-  nextStatus,
-  getStatus,
-  vibrate,
-  type StickersMap,
-} from "@/lib/figurinhas";
+import { subscribeCloudStickers, saveCloudSticker, clearCloudStickers } from "@/lib/figurinhasNuvem";
+import { nextStatus, getStatus, vibrate, type StickersMap } from "@/lib/figurinhas";
 
 const Index = () => {
   const [stickers, setStickers] = useState<StickersMap>({});
@@ -38,8 +26,6 @@ const Index = () => {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
-
-  // 🔥 ESSA LINHA É A CHAVE DO SCROLL
   const restoreSectionIdRef = useRef<string | null>(null);
 
   useEffect(() => {

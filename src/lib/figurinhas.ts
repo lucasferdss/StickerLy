@@ -1,9 +1,7 @@
 import { ALBUM_TOTAL, type Section } from "./albumFigurinhas";
 
 export const TOTAL_STICKERS = ALBUM_TOTAL;
-
 export type StickerStatus = "missing" | "owned" | "repeated";
-
 export type StickersMap = Record<number, StickerStatus>;
 
 const STORAGE_KEY = "copa-sticker:v1";
@@ -24,25 +22,15 @@ export function loadStickers(): StickersMap {
 export function saveStickers(map: StickersMap) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
-  } catch {
-    /* ignore */
-  }
+  } catch {}
 }
 
-/**
- * CICLO PADRÃO (ÁLBUM)
- * missing → owned → repeated → missing
- */
 export function nextStatus(s: StickerStatus): StickerStatus {
   if (s === "missing") return "owned";
   if (s === "owned") return "repeated";
   return "missing";
 }
 
-/**
- * CICLO ESPECIAL (REPETIDAS)
- * repeated → owned
- */
 export function removeRepeated(): StickerStatus {
   return "owned";
 }
@@ -91,8 +79,6 @@ export function vibrate(ms: number | number[] = 8) {
   if (typeof navigator !== "undefined" && "vibrate" in navigator) {
     try {
       navigator.vibrate(ms);
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   }
 }
