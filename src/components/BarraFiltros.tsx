@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Search, X } from "lucide-react";
-import type { StickerStatus } from "@/lib/figurinhas";
+import type { Filter } from "@/lib/filtros";
 
-export type Filter = "all" | "owned" | "missing" | "repeated";
+export type { Filter };
 
 interface Props {
   query: string;
@@ -68,7 +68,3 @@ export function FilterBar({ query, onQuery, filter, onFilter }: Props) {
   );
 }
 
-export function statusMatchesFilter(status: StickerStatus, filter: Filter): boolean {
-  if (filter === "all") return true;
-  return status === filter;
-}

@@ -14,6 +14,12 @@ import { auth } from "./firebaseConfig";
 
 const googleProvider = new GoogleAuthProvider();
 
+function getErrorCode(error: unknown) {
+  return typeof error === "object" && error !== null && "code" in error
+    ? String(error.code)
+    : "";
+}
+
 export async function loginWithGoogle() {
   return signInWithPopup(auth, googleProvider);
 }
@@ -23,7 +29,7 @@ export async function loginWithEmail(email: string, password: string) {
 
   try {
     return await signInWithEmailAndPassword(auth, cleanEmail, password);
-  } catch (error: any) {
+  } catch (error: unknown) {
     const methods = await fetchSignInMethodsForEmail(auth, cleanEmail);
 
     if (methods.includes("google.com")) {
@@ -34,8 +40,8 @@ export async function loginWithEmail(email: string, password: string) {
 
         try {
           await linkWithCredential(result.user, credential);
-        } catch (linkError: any) {
-          if (linkError.code !== "auth/provider-already-linked") {
+        } catch (linkError: unknown) {
+          if (getErrorCode(linkError) !== "auth/provider-already-linked") {
             throw linkError;
           }
         }
@@ -66,8 +72,8 @@ export async function registerWithEmail(
 
       try {
         await linkWithCredential(result.user, credential);
-      } catch (linkError: any) {
-        if (linkError.code !== "auth/provider-already-linked") {
+      } catch (linkError: unknown) {
+        if (getErrorCode(linkError) !== "auth/provider-already-linked") {
           throw linkError;
         }
       }

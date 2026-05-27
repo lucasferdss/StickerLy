@@ -7,6 +7,12 @@ import {
   resetPassword,
 } from "@/lib/autenticacao";
 
+function getErrorCode(error: unknown) {
+  return typeof error === "object" && error !== null && "code" in error
+    ? String(error.code)
+    : "";
+}
+
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -34,12 +40,14 @@ export function AuthModal({ open, onClose }: Props) {
       }
 
       onClose();
-    } catch (error: any) {
-      if (error?.code === "auth/invalid-credential") {
+    } catch (error: unknown) {
+      const code = getErrorCode(error);
+
+      if (code === "auth/invalid-credential") {
         setMessage(
           "E-mail ou senha incorretos. Se você criou a conta com Google, entre em Continuar com Google."
         );
-      } else if (error?.code === "auth/email-already-in-use") {
+      } else if (code === "auth/email-already-in-use") {
         setMessage("Esse e-mail já está em uso. Tente entrar ou use Google.");
       } else {
         setMessage(

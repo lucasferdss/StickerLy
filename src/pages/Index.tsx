@@ -9,7 +9,7 @@ import { StatsView } from "@/components/VisaoEstatisticas";
 import { ResetDialog } from "@/components/DialogoRedefinir";
 import { AuthModal } from "@/components/ModalAutenticacao";
 import { StickerCard } from "@/components/CardFigurinha";
-import type { Filter } from "@/components/BarraFiltros";
+import type { Filter } from "@/lib/filtros";
 import { SECTIONS, sectionOf } from "@/lib/albumFigurinhas";
 import { auth } from "@/lib/firebaseConfig";
 import { logoutUser } from "@/lib/autenticacao";

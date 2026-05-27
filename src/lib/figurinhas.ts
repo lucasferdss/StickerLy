@@ -22,7 +22,9 @@ export function loadStickers(): StickersMap {
 export function saveStickers(map: StickersMap) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
-  } catch {}
+  } catch {
+    // Storage can be unavailable in private mode or when quota is exceeded.
+  }
 }
 
 export function nextStatus(s: StickerStatus): StickerStatus {
@@ -79,6 +81,8 @@ export function vibrate(ms: number | number[] = 8) {
   if (typeof navigator !== "undefined" && "vibrate" in navigator) {
     try {
       navigator.vibrate(ms);
-    } catch {}
+    } catch {
+      // Some browsers expose vibrate but block it depending on permissions.
+    }
   }
 }

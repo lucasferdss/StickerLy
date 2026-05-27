@@ -4,8 +4,7 @@ import { useMemo, useRef } from "react";
 import type { Section } from "@/lib/albumFigurinhas";
 import { computeSectionStats, getStatus, type StickersMap } from "@/lib/figurinhas";
 import { StickerCard } from "@/components/CardFigurinha";
-import type { Filter } from "@/components/BarraFiltros";
-import { statusMatchesFilter } from "@/components/BarraFiltros";
+import { statusMatchesFilter, type Filter } from "@/lib/filtros";
 
 interface Props {
   section: Section;
