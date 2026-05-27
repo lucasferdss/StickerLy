@@ -1,24 +1,35 @@
 # Dependencies
 node_modules/
 .pnp/
+.pnp.cjs
 .pnp.js
-
-# Build
-dist/
-build/
-out/
-dev-dist/
-
-# Vite / cache
-.vite/
-.cache/
-.eslintcache
-*.tsbuildinfo
 
 # Environment variables
 .env
 .env.*
 !.env.example
+
+# Production builds
+dist/
+build/
+out/
+dev-dist/
+
+# Tool caches
+.vite/
+.cache/
+.parcel-cache/
+.rollup.cache/
+.turbo/
+.eslintcache
+*.tsbuildinfo
+
+# Test and coverage output
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+blob-report/
 
 # Logs
 logs/
@@ -27,44 +38,58 @@ npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 bun-debug.log*
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# Firebase local state and emulators
+.firebase/
+firebase-export-*/
+firestore_export/
+
+# Deploy platform local state
+.vercel/
+.netlify/
+
+# Local credentials, keys, and certificates
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+*serviceAccount*.json
+*service-account*.json
+google-application-credentials*.json
+credentials*.json
+
+# Local databases and generated data
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Editor and IDE local files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
 
 # OS files
 .DS_Store
 Thumbs.db
 Desktop.ini
+$RECYCLE.BIN/
 
-# IDE
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-.idea/
-
-# Local certs / keys
-*.pem
-*.key
-*.crt
-*.p12
-*.pfx
-
-# Local database / temp
-*.sqlite
-*.sqlite3
-*.db
-tmp/
-temp/
-*.tmp
-*.bak
-*.backup
-
-# Deploy platforms
-.vercel/
-.netlify/
-
-# Coverage / tests
-coverage/
-.nyc_output/
-
-# Package managers not used
+# Package manager files not used by this project
 bun.lockb
 yarn.lock
 pnpm-lock.yaml
