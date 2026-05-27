@@ -2,7 +2,7 @@
 
 O **StickerLy** é um aplicativo web moderno para gerenciamento de álbuns de figurinhas, inspirado na Copa do Mundo 2026.
 
-O objetivo é permitir que usuários acompanhem suas figurinhas, vejam progresso, gerenciem repetidas e controlem seus gastos — tudo de forma simples, rápida e com experiência de app nativo.
+O objetivo é permitir que usuários acompanhem suas figurinhas, vejam progresso, gerenciem repetidas e controlem seus gastos, tudo de forma simples, rápida e com experiência de app nativo.
 
 ---
 
