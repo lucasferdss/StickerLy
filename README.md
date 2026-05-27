@@ -1,4 +1,4 @@
-# 🎴 StickerLy — Álbum de Figurinhas Digital
+#  StickerLy — Gerenciador de Álbum de Figurinhas Digital
 
 O **StickerLy** é um aplicativo web moderno para gerenciamento de álbuns de figurinhas, inspirado na Copa do Mundo 2026.
 
@@ -6,25 +6,25 @@ O objetivo é permitir que usuários acompanhem suas figurinhas, vejam progresso
 
 ---
 
-## 🚀 Funcionalidades
+##  Funcionalidades
 
-### 📚 Álbum de Figurinhas
+###  Álbum de Figurinhas
 - Visualização completa do álbum
 - Organização por seleções e grupos
 - Marcação de figurinhas:
-  - ❌ Faltando
-  - ✅ Possui
-  - 🔁 Repetida
+  -  Faltando
+  -  Possui
+  -  Repetida
 
 ---
 
-### 🔍 Busca Inteligente
+###  Busca Inteligente
 - Busca por seleções
 - Navegação rápida entre páginas do álbum
 
 ---
 
-### 📊 Estatísticas
+###  Estatísticas
 - Progresso total do álbum (%)
 - Quantidade:
   - Figurinhas coletadas
@@ -33,21 +33,21 @@ O objetivo é permitir que usuários acompanhem suas figurinhas, vejam progresso
 
 ---
 
-### 💰 Controle de Gastos
+###  Controle de Gastos
 - Adicionar valores de compras
 - Soma automática dos gastos
 - Histórico salvo na nuvem
 
 ---
 
-### 🔁 Figurinhas Repetidas
+###  Figurinhas Repetidas
 - Visualização separada
 - Organização por seleção
 - Gerenciamento fácil para troca
 
 ---
 
-### 👤 Sistema de Conta
+###  Sistema de Conta
 - Login com:
   - Email e senha
   - Google
@@ -55,21 +55,21 @@ O objetivo é permitir que usuários acompanhem suas figurinhas, vejam progresso
 
 ---
 
-### ☁️ Sincronização em Nuvem
+###  Sincronização em Nuvem
 - Firebase Firestore
 - Dados salvos por usuário
 - Acesso em qualquer dispositivo
 
 ---
 
-### 📱 PWA (App Instalável)
+###  PWA (App Instalável)
 - Pode ser instalado como aplicativo
 - Funciona como app mobile
 - Experiência semelhante à App Store
 
 ---
 
-## 🧠 Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 - **React + Vite**
 - **TypeScript**
@@ -82,7 +82,7 @@ O objetivo é permitir que usuários acompanhem suas figurinhas, vejam progresso
 
 ---
 
-## 📂 Estrutura do Projeto
+##  Estrutura do Projeto
 
 ```bash
 src/
